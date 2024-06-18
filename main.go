@@ -1,14 +1,21 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 )
 
+type Todo struct {
+	UserID    int    `json:"userId"`
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed"`
+}
+
 func main() {
-	url := "https://jsonplaceholder.typicode.com/todos/1/"
+	url := "https://jsonplaceholder.typicode.com/todos/2/"
 
 	response, err := http.Get(url)
 	if err != nil {
@@ -18,13 +25,10 @@ func main() {
 	defer response.Body.Close()
 
 	if response.StatusCode == http.StatusOK {
-		bodyBytes, err := io.ReadAll(response.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
+		todoItem := Todo{}
+		json.NewDecoder(response.Body).Decode(&todoItem)
 
-		data := string(bodyBytes)
-		fmt.Println(data)
+		fmt.Printf("Data from API: %+v\n", todoItem)
 
 	}
 }
