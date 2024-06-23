@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 )
@@ -23,6 +24,13 @@ func main() {
 	}
 
 	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s\n", string(body))
 
 	if response.StatusCode == http.StatusOK {
 		todoItem := Todo{}
