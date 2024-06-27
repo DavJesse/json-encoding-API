@@ -8,7 +8,7 @@ import (
 )
 
 type Todo struct {
-	UserID    int    `json:"userId"`
+	UserID    int	`json:"userId"`
 	ID        int    `json:"id"`
 	Title     string `json:"title"`
 	Completed bool   `json:"completed"`
@@ -27,11 +27,16 @@ func main() {
 	if response.StatusCode == http.StatusOK {
 		todoItem := Todo{}
 		decoder := json.NewDecoder(response.Body)
-		decoder.DisallowUnknownFields()
+
 		if err := decoder.Decode(&todoItem); err != nil {
 			log.Fatal("Decode error:", err)
 		}
-		fmt.Printf("Data from API: %+v\n", todoItem)
 
+		//Convert back to json
+		todo, err := json.Marshal(todoItem)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(todo))
 	}
 }
